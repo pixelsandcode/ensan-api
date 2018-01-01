@@ -1,0 +1,27 @@
+default:
+  app: ensan
+  url: www.ensan.ir
+  server:
+    sampling: 5000
+    host: http://localhost
+    port: 3100
+    timeout: 3000
+  databases:
+    application:
+      host: 127.0.0.1
+      name: ensan
+      mock: false
+  searchengine:
+    application:
+      host: localhost
+      port: 9200
+      name: ensan
+      log: debug # error, warning, info, debug, trace
+  cache:
+    host: 0.0.0.0
+    port: 6379
+development:
+functionaltest:
+unittest:
+production:
+staging:

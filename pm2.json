@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "exec_mode": "fork_mode",
+      "script": "./core/server.js",
+      "name": "ensan",
+      "env": {
+        "PORT_INDEX": 0
+      },
+      "error_file": "./logs/ensan.err.log",
+      "out_file": "./logs/ensan.out.log"
+    }
+  ]
+}
