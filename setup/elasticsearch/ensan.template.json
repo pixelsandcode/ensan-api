@@ -1,0 +1,31 @@
+{
+  "order": 0,
+  "template": "ensan*",
+  "settings": {},
+  "mappings": {
+    "user": {
+      "_source": {
+        "includes": [
+          "doc.name",
+          "doc.mobile",
+          "doc.state",
+          "doc.joinedAt"
+        ]
+      },
+      "properties": {
+        "doc": {
+          "properties": {
+            "state": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "joinedAt": {
+              "type": "date"
+            }
+          }
+        }
+      }
+    }
+  },
+  "aliases": {}
+}

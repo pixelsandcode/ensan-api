@@ -1,0 +1,28 @@
+version: '3'
+services:
+  database:
+    image: couchbase:enterprise-4.6.4
+    volumes:
+      - ../cbdata:/opt/couchbase/var
+    ports:
+      - "8091-8093:8091-8093"
+      - "11210:11210"
+  es:
+    environment:
+      - ADMINISTRATOR_USERNAME=Administrator
+      - ADMINISTRATOR_PASSWORD=22751838
+    image: es-kopf-transport:1.7.6
+    volumes:
+      - ../esdata:/usr/share/elasticsearch/data
+      - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - "9091:9091"
+      - "9200:9200"
+      - "9300:9300"
+    depends_on:
+      - database
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+

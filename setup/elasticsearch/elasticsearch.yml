@@ -1,0 +1,5 @@
+couchbase.username: ${ADMINISTRATOR_USERNAME}
+couchbase.password: ${ADMINISTRATOR_PASSWORD}
+
+couchbase.typeSelector: org.elasticsearch.transport.couchbase.capi.RegexTypeSelector
+couchbase.typeSelector.documentTypesRegex.user: ^ea_u_[^:]+$

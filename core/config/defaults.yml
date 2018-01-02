@@ -1,1 +1,10 @@
 default:
+  keyRegexes:
+    general:
+      mobile: ^(0|\+[1-9][0-9]{0,4})[0-9]{7,10}$
+    users:
+      user: ^ea_u_[^:]+$
+  kavenegar:
+    apiKey: 5975544A34502F41444F5941314C3474663575723049324B6C305148774B4778
+  fcm:
+    serverKey: AIzaSyAGfQVfl2umHknHQtTB-gcUxwyARUytLk0

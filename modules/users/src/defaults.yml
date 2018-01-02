@@ -1,0 +1,27 @@
+default:
+  users:
+    notifyingTypes:
+      healthy: healthy
+      inDanger: inDanger
+    states:
+      joined: joined
+      pending: pending
+    masks:
+      details: docKey,mobile,name,guardians,state
+      guardian: docKey,mobile,name,state
+    devices:
+      max: 5
+    notifyGuardians:
+      title:
+        healthy: ':name سالم است'
+        inDanger: 'هشدار!'
+      body:
+        healthy: ':name در ساعت :at اعلام کرد که سالم است'
+        inDanger: ':name در ساعت :at اعلام کرد که در خطر است'
+    notifyInviter:
+      title: 'آشنایان را دوباره دعوت کنید'
+      body: 'تعدادی از آشنایان به دعوت شما پاسخ نداده اند. دوباره آن ها را دعوت کنید'
+    inviterListSize: 100
+    jobs:
+      notifyInviters: "at 00:05"
+    jobsPaginationDelay: 2000

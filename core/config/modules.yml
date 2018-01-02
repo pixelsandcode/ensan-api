@@ -1,2 +1,2 @@
-# list of generated modules
 modules:
+  users: ensan.users
