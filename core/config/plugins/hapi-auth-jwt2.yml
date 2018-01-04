@@ -3,6 +3,6 @@ default:
   key: YAr7<pEDnG4U:Sfo~SzKRgMaxrvo_Ko{X&wnEGaGG4)v!U)]X;s3]BAE)LbscH
   expiration: 3600
   cache_prefix: 'token:'
-  allow_renew: false
+  allow_renew: true
   renew_threshold: 60
   algorithm: HS384

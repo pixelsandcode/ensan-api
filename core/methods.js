@@ -1,6 +1,7 @@
 "use strict"
-const _    = require('lodash')
-const Boom = require('boom')
+const _     = require('lodash')
+const Boom  = require('boom')
+const later = require('later')
 
 module.exports = (server) => {
 

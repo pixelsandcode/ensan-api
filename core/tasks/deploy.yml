@@ -1,0 +1,21 @@
+default:
+  path: /var/www/ensanapp.ir
+  stop: waker kill                            # Stop command for app
+  start: waker run -b -e                      # Start command for app
+  history: 5                                  # How many old releases should be kept
+  git:
+    remote: git@api.github.com:pixelsandcode/ensan-api.git
+staging:
+  git:
+    branch: master
+  ssh:
+    host: 172.104.239.249
+    username: app
+    privateKey: /home/rgmax/.ssh/ensan
+production:
+  git:
+    branch: master
+  ssh:
+    host: 172.104.239.249
+    username: app
+    privateKey: /home/rgmax/.ssh/ensan

@@ -21,6 +21,7 @@ default:
     notifyInviter:
       title: 'آشنایان را دوباره دعوت کنید'
       body: 'تعدادی از آشنایان به دعوت شما پاسخ نداده اند. دوباره آن ها را دعوت کنید'
+      type: notifyInviter
     inviterListSize: 100
     jobs:
       notifyInviters: "at 00:05"

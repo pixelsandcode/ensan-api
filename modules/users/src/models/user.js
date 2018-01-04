@@ -214,6 +214,9 @@ module.exports = (server, options) => {
           return UserDevices.getByUser(userKey)
             .then(usersDevice => {
               const message = {
+                data: {
+                  type: options.users.notifyInviter.type
+                },
                 notification: {
                   title: options.users.notifyInviter.title,
                   body: options.users.notifyInviter.body
