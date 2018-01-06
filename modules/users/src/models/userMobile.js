@@ -37,6 +37,8 @@ module.exports = (server, options) => {
     }
 
     _key (mobile) {
+      if(mobile.charAt(0) == '0')
+        mobile = `+98${mobile.substring(1)}`
       return `${this.PREFIX()}:${mobile}`
     }
 
