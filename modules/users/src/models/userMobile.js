@@ -32,8 +32,8 @@ module.exports = (server, options) => {
       }
     }
 
-    constructor (doc) {
-      super(doc, UserMobile.prototype._key(doc.mobile))
+    constructor (doc, mobile) {
+      super(doc, UserMobile.prototype._key(mobile))
     }
 
     _key (mobile) {

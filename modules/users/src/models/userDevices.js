@@ -25,8 +25,8 @@ module.exports = (server, options) => {
       }
     }
 
-    constructor (doc) {
-      super(doc, UserDevices.prototype._key(doc.userKey))
+    constructor (doc, userKey) {
+      super(doc, UserDevices.prototype._key(userKey))
     }
 
     _key (userKey) {

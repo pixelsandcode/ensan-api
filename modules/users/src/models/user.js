@@ -49,8 +49,8 @@ module.exports = (server, options) => {
       this.doc.guardians = []
       this.doc.createdAt = moment().format()
       if(!this.doc.state) this.doc.state = options.users.states.joined
-      const userMobile = new UserMobile({mobile: this.doc.mobile, userKey: this.key})
-      const userDevices = new UserDevices({userKey: this.key})
+      const userMobile = new UserMobile({mobile: this.doc.mobile, userKey: this.key}, this.doc.mobile)
+      const userDevices = new UserDevices({userKey: this.key}, this.key)
       const promises = [
         userMobile.create(),
         userDevices.create()
