@@ -31,7 +31,10 @@ module.exports = (server, options) => {
           whiteList: false
         },
         guardians: {
-          schema: Joi.array().items(Joi.string().regex(new RegExp(options.keyRegexes.users.user))),
+          schema: Joi.array().items(Joi.object().keys({
+            userKey: Joi.string().regex(new RegExp(options.keyRegexes.users.user)),
+            name: Joi.string()
+          })),
           whiteList: false
         },
         createdAt: {
@@ -124,9 +127,12 @@ module.exports = (server, options) => {
           }
           return operation()
             .then(userKey => {
-              if(user.doc.guardians.indexOf(userKey) >= 0)
+              const index = _.findIndex(user.doc.guardians, guardian => {
+                return guardian.userKey == userKey
+              })
+              if(index >= 0)
                 throw Boom.conflict('the user already is added as your guardian')
-              user.doc.guardians.push(userKey)
+              user.doc.guardians.push({userKey, name})
               return user.update()
                 .then(() => {
                   return user.listGuardians(user.key)
@@ -147,7 +153,18 @@ module.exports = (server, options) => {
 
     listGuardians () {
       if(this.doc.guardians.length < 1) return Promise.resolve([])
-      return User.find(this.doc.guardians, options.users.masks.guardian)
+      const userKeys = _.map(this.doc.guardians, 'userKey')
+      const keyMap = {}
+      _.each(this.doc.guardians, guardian => {
+        keyMap[guardian.userKey] = guardian
+      })
+      return User.find(userKeys, options.users.masks.guardian)
+        .then(users => {
+          return _.map(users, user => {
+            user.name = keyMap[user.docKey].name
+            return user
+          })
+        })
     }
 
     static addDevice (userKey, {token}) {
@@ -162,11 +179,16 @@ module.exports = (server, options) => {
         .then(user => {
           const {name, mobile, guardians} = user.doc
           if(guardians.length < 1) throw Boom.notFound('there are no guardians')
-          return UserDevices.findByUser(guardians, 'devices')
+          const userKeys = _.map(guardians, 'userKey')
+          return UserDevices.findByUser(userKeys, 'devices')
             .then(usersDevices => {
               let tokens = []
+              let sendTo = 0
               _.each(usersDevices, userDevices => {
-                tokens = _.union(tokens, userDevices.devices)
+                if(userDevices.devices.length > 0) {
+                  sendTo++
+                  tokens = _.union(tokens, userDevices.devices)
+                }
               })
               const message = {
                 notification: {
@@ -178,7 +200,7 @@ module.exports = (server, options) => {
                 }
               }
               server.methods.notification.send(tokens, message)
-              return {sendTo: guardians.length}
+              return {sendTo}
             })
         })
     }
@@ -206,16 +228,20 @@ module.exports = (server, options) => {
       return this.listGuardians(userKey)
         .then(guardians => {
           let allJoined = true
+          const pending = []
           _.each(guardians, guardian => {
-            if(guardian.state == options.users.states.pending)
+            if(guardian.state == options.users.states.pending) {
               allJoined = false
+              pending.push(guardian.name)
+            }
           })
           if(allJoined) return true
           return UserDevices.getByUser(userKey)
             .then(usersDevice => {
               const message = {
                 data: {
-                  type: options.users.notifyInviter.type
+                  type: options.users.notifyInviter.type,
+                  pending
                 },
                 notification: {
                   title: options.users.notifyInviter.title,
@@ -252,6 +278,13 @@ module.exports = (server, options) => {
       return this.buildInviterQuery(page, size)
         .then(query => {
           return Promise.resolve(User.search('user', query, {format: true}))
+        })
+    }
+
+    static getByMobile (mobile) {
+      return UserMobile.getByMobile(mobile)
+        .then(userMobile => {
+          return this.get(userMobile.doc.userKey)
         })
     }
   }

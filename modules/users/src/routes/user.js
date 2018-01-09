@@ -88,6 +88,16 @@ module.exports = (server, options) => {
         description: "User can notify his/her guardians about his/her status",
         tags: ['user', 'notify']
       }
+    },
+    {
+      method: 'POST',
+      path: '/v1/admin/users/{mobile}/notify',
+      config: {
+        handler: User.admin.notify,
+        validate: UserValidator.admin.notify,
+        description: "Admin can notify a user",
+        tags: ['admin', 'notify']
+      }
     }
   ]
 }

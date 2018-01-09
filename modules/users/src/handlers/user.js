@@ -1,5 +1,6 @@
 "use strict"
 const _ = require('lodash')
+const Boom = require('boom')
 
 module.exports = (server, options) => {
 
@@ -97,6 +98,25 @@ module.exports = (server, options) => {
         .catch(err => {
           server.methods.common.handleError(err, {}, request, reply)
         })
+    },
+    admin: {
+      notify (request, reply) {
+        if(request.headers.authorization != options.admin.apiKey)
+          return reply(Boom.unauthorized('not authorized to access the API'))
+        switch(request.payload.type) {
+          case options.users.notifications.notifyInviter:
+            User.getByMobile(request.params.mobile)
+              .then(user => {
+                return User.notifyInviter(user.key)
+              })
+              .then(() => {
+                reply.success()
+              })
+            break
+          default:
+            reply.error('type is not defined')
+        }
+      }
     }
   }
 }

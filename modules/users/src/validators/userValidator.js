@@ -56,5 +56,13 @@ module.exports = (options) => {
       },
       query: {}
     },
+    admin: {
+      notify: {
+        payload: {
+          type: Joi.string().valid(_.keys(options.users.notifications)).required(),
+        },
+        query: {}
+      }
+    }
   }
 }

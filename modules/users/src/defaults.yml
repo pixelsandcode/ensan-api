@@ -26,3 +26,7 @@ default:
     jobs:
       notifyInviters: "at 00:05"
     jobsPaginationDelay: 2000
+    notifications:
+      healthy: healthy
+      inDanger: inDanger
+      notifyInviter: notifyInviter
