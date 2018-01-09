@@ -16,6 +16,9 @@ shared
 #local configs
 */**/config.yml
 
+#npm lock files
+*/**/package-lock.json
+
 # Runtime data
 pids
 *.pid
