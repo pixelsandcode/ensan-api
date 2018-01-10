@@ -112,6 +112,9 @@ module.exports = (server, options) => {
               .then(() => {
                 reply.success()
               })
+              .catch(err => {
+                reply.error(err, {mobile: request.params.mobile, type: request.payload.type})
+              })
             break
           default:
             reply.error('type is not defined')
