@@ -247,8 +247,7 @@ module.exports = (server, options) => {
                 notification: {
                   title: options.users.notifyInviter.title,
                   body: options.users.notifyInviter.body,
-                  sound: "default",
-                  icon: "ic_launcher"
+                  sound: "default"
                 }
               }
               server.methods.notification.send(usersDevice.doc.devices, message)
