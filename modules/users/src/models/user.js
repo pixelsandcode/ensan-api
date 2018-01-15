@@ -193,7 +193,8 @@ module.exports = (server, options) => {
               const message = {
                 notification: {
                   title: options.users.notifyGuardians.title[type].replace(':name', name),
-                  body: options.users.notifyGuardians.body[type].replace(':name', name).replace(':at', moment().format('HH:mm'))
+                  body: options.users.notifyGuardians.body[type].replace(':name', name).replace(':at', moment().format('HH:mm')),
+                  sound: "default"
                 },
                 data: {
                   type, location, userKey, name, mobile, at: moment().format()
@@ -245,7 +246,9 @@ module.exports = (server, options) => {
                 },
                 notification: {
                   title: options.users.notifyInviter.title,
-                  body: options.users.notifyInviter.body
+                  body: options.users.notifyInviter.body,
+                  sound: "default",
+                  icon: "ic_launcher"
                 }
               }
               server.methods.notification.send(usersDevice.doc.devices, message)
