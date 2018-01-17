@@ -11,7 +11,7 @@ module.exports = (server, options) => {
   const UserMobile = require('./userMobile')(server, options)
   const UserDevices = require('./userDevices')(server, options)
 
-  return class User extends server.methods.model.ensanBase('application') {
+  return class User extends server.methods.model.base('application') {
     PREFIX() {
       return 'ea_u'
     }
@@ -127,6 +127,7 @@ module.exports = (server, options) => {
           }
           return operation()
             .then(userKey => {
+              if(userKey == user.key) throw Boom.methodNotAllowed("You can not add yourself as guardian")
               const index = _.findIndex(user.doc.guardians, guardian => {
                 return guardian.userKey == userKey
               })
@@ -287,6 +288,39 @@ module.exports = (server, options) => {
       return UserMobile.getByMobile(mobile)
         .then(userMobile => {
           return this.get(userMobile.doc.userKey)
+        })
+    }
+
+    static deleteGuardian (userKey, guardianKey) {
+      return this.get(userKey)
+        .then(user => {
+          let index = -1
+          _.each(user.doc.guardians, (guardian, i) => {
+            if(guardian.userKey == guardianKey)
+              index = i
+          })
+          if(index < 0) throw Boom.notFound('Guardian not found')
+          user.doc.guardians.splice(index, 1)
+          return user.update()
+            .then(() => {
+              return user.mask(options.users.masks.details)
+            })
+        })
+    }
+
+    static deleteUserByMobile (mobile) {
+      return UserMobile.exists(mobile)
+        .then(userMobile => {
+          if(!userMobile) throw Boom.notFound("Mobile number not found.")
+          return User.get(userMobile.doc.userKey)
+        })
+        .then(user => {
+          if(user.doc.state == options.users.states.pending)
+            throw Boom.notFound("Mobile number is not joined yet")
+          user.doc.state = options.users.states.pending
+          user.doc.guardians = []
+          delete user.doc.joinedAt
+          return user.update()
         })
     }
   }

@@ -36,7 +36,7 @@
     "path": "^0.12.7",
     "puffer": "^1.1.1",
     "request": "^2.81.0",
-    "waker": "^1.0.19",
+    "waker": "^1.0.21",
     "yml": "^1.0.0"
   },
   "devDependencies": {

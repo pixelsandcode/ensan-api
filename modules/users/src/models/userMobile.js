@@ -6,7 +6,7 @@ const Boom = require('boom')
 const Kavenegar = require('kavenegar');
 
 module.exports = (server, options) => {
-  return class UserMobile extends server.methods.model.ensanBase('application') {
+  return class UserMobile extends server.methods.model.base('application') {
     PREFIX() {
       return 'ea_um'
     }

@@ -20,7 +20,7 @@ module.exports = (server, options) => {
             .header('Authorization', token)
         })
         .catch(err => {
-          server.methods.common.handleError(err, {payload: request.payload}, request, reply)
+          reply.error(err, {payload: request.payload})
         })
     },
     verify (request, reply) {
@@ -34,7 +34,7 @@ module.exports = (server, options) => {
             .header('Authorization', token)
         })
         .catch(err => {
-          server.methods.common.handleError(err, {payload: request.payload}, request, reply)
+          reply.error(err, {payload: request.payload})
         })
     },
     login (request, reply) {
@@ -56,7 +56,7 @@ module.exports = (server, options) => {
       }
       operation()
         .catch(err => {
-          server.methods.common.handleError(err, {payload: request.payload}, request, reply)
+          reply.error(err, {payload: request.payload})
         })
     },
     devices (request, reply) {
@@ -65,7 +65,7 @@ module.exports = (server, options) => {
           reply.success(result)
         })
         .catch(err => {
-          server.methods.common.handleError(err, {payload: request.payload}, request, reply)
+          reply.error(err, {payload: request.payload})
         })
     },
     logout (request, reply) {
@@ -78,7 +78,7 @@ module.exports = (server, options) => {
           reply.success(result)
         })
         .catch(err => {
-          server.methods.common.handleError(err, {payload: request.payload}, request, reply)
+          reply.error(err, {payload: request.payload})
         })
     },
     listGuardians (request, reply) {
@@ -87,7 +87,16 @@ module.exports = (server, options) => {
           reply.success(result)
         })
         .catch(err => {
-          server.methods.common.handleError(err, {}, request, reply)
+          reply.error(err, {})
+        })
+    },
+    deleteGuardian (request, reply) {
+      User.deleteGuardian(request.auth.credentials.userKey, request.params.guardianKey)
+        .then(result => {
+          reply.success(result)
+        })
+        .catch(err => {
+          reply.error(err, {})
         })
     },
     notify (request, reply) {
@@ -96,7 +105,7 @@ module.exports = (server, options) => {
           reply.success(result)
         })
         .catch(err => {
-          server.methods.common.handleError(err, {}, request, reply)
+          reply.error(err, {})
         })
     },
     admin: {
@@ -119,6 +128,17 @@ module.exports = (server, options) => {
           default:
             reply.error('type is not defined')
         }
+      },
+      deleteUserByMobile (request, reply) {
+        if(request.headers.authorization != options.admin.apiKey)
+          return reply(Boom.unauthorized('not authorized to access the API'))
+        User.deleteUserByMobile(request.params.mobile)
+          .then(() => {
+            reply.success()
+          })
+          .catch(err => {
+            reply.error(err, {})
+          })
       }
     }
   }

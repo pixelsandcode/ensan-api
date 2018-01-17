@@ -79,6 +79,17 @@ module.exports = (server, options) => {
       }
     },
     {
+      method: 'DELETE',
+      path: '/v1/user/guardians/{guardianKey}',
+      config: {
+        handler: User.deleteGuardian,
+        validate: UserValidator.deleteGuardian,
+        auth: server.methods.auth.user(),
+        description: "User can delete one of his/her guardians",
+        tags: ['user', 'guardian', 'delete']
+      }
+    },
+    {
       method: 'POST',
       path: '/v1/user/notify',
       config: {
@@ -97,6 +108,16 @@ module.exports = (server, options) => {
         validate: UserValidator.admin.notify,
         description: "Admin can notify a user",
         tags: ['admin', 'notify']
+      }
+    },
+    {
+      method: 'DELETE',
+      path: '/v1/admin/users/{mobile}',
+      config: {
+        handler: User.admin.deleteUserByMobile,
+        validate: UserValidator.admin.deleteUserByMobile,
+        description: "Admin can delete a user by mobile number",
+        tags: ['admin', 'delete']
       }
     }
   ]

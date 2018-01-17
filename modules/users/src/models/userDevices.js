@@ -7,7 +7,7 @@ const Boom    = require('boom')
 
 module.exports = (server, options) => {
 
-  return class UserDevices extends server.methods.model.ensanBase('application') {
+  return class UserDevices extends server.methods.model.base('application') {
     POSTFIX () {
       return 'devices'
     }

@@ -5,6 +5,7 @@ const _   = require('lodash')
 module.exports = (options) => {
 
   const mobileRegex = new RegExp(options.keyRegexes.general.mobile)
+  const userKeyRegex = new RegExp(options.keyRegexes.users.user)
   return {
     signup: {
       payload: {
@@ -46,6 +47,12 @@ module.exports = (options) => {
     listGuardians: {
       query: {}
     },
+    deleteGuardian: {
+      params: {
+        guardianKey: Joi.string().regex(userKeyRegex).required()
+      },
+      query: {}
+    },
     notify: {
       payload: {
         type: Joi.string().valid(_.keys(options.users.notifyingTypes)).required(),
@@ -60,6 +67,12 @@ module.exports = (options) => {
       notify: {
         payload: {
           type: Joi.string().valid(_.keys(options.users.notifications)).required(),
+        },
+        query: {}
+      },
+      deleteUserByMobile: {
+        params: {
+          mobile: Joi.string().regex(mobileRegex).required()
         },
         query: {}
       }
