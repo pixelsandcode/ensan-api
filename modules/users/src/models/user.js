@@ -127,7 +127,7 @@ module.exports = (server, options) => {
               guardians = _.map(users, user => {
                 return {userKey: user.key, name: user.doc.name}
               })
-              user.doc.guardians = _.union(user.doc.guardians, guardians)
+              user.doc.guardians = _.uniqBy(_.union(user.doc.guardians, guardians), 'userKey')
               return user.update()
                 .then(() => {
                   return user.listGuardians(user.key)
@@ -192,7 +192,7 @@ module.exports = (server, options) => {
                   sound: "default"
                 },
                 data: {
-                  type, location, userKey, name, mobile, at: moment().format()
+                  type, lat: location.lat, lon: location.lon, userKey, name, mobile, at: moment().format()
                 }
               }
               if(type == options.users.notifyingTypes.inDanger) message.notification.click_action = "DANGER_CATEGORY"

@@ -9,6 +9,7 @@ default:
     masks:
       details: docKey,mobile,name,guardians,state
       guardian: docKey,mobile,name,state
+      login: docKey,mobile,name,state
     devices:
       max: 5
     notifyGuardians:

@@ -27,11 +27,14 @@ module.exports = (server, options) => {
     verify (request, reply) {
       User.verifyPin(request.payload)
         .then(result => {
+          return User.get(result.userKey)
+        })
+        .then(user => {
           const token = server.methods.jwt.create({
-            userKey:result.userKey,
+            userKey: user.key,
             scope: 'user'
           })
-          reply.success(result)
+          reply.success(user.mask(options.users.masks.login))
             .header('Authorization', token)
         })
         .catch(err => {
@@ -43,11 +46,14 @@ module.exports = (server, options) => {
         if(request.payload.auth)
           return User.checkCredentials(request.payload)
             .then(userKey => {
+              return User.get(userKey)
+            })
+            .then(user => {
               const token = server.methods.jwt.create({
-                userKey: userKey,
+                userKey: user.key,
                 scope: 'user'
               })
-              return reply.success()
+              return reply.success(user.mask(options.users.masks.login))
                 .header('Authorization', token)
             })
         return User.generatePin(request.payload.mobile)
@@ -141,9 +147,8 @@ module.exports = (server, options) => {
                       },
                       data: {
                         type: request.payload.type,
-                        location: {
-                          lat: 35.6892,
-                          lon:51.3890},
+                        lat: 35.6892,
+                        lon: 51.3890,
                         userKey: user.key,
                         name: user.doc.name,
                         mobile: user.doc.mobile,
