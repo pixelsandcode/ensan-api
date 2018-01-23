@@ -192,8 +192,12 @@ module.exports = (server, options) => {
                   sound: "default"
                 },
                 data: {
-                  type, lat: location.lat, lon: location.lon, userKey, name, mobile, at: moment().format()
+                  type, userKey, name, mobile, at: moment().format()
                 }
+              }
+              if(location) {
+                message.data.lat = location.lat
+                message.data.lon = location.lon
               }
               if(type == options.users.notifyingTypes.inDanger) message.notification.click_action = "DANGER_CATEGORY"
               server.methods.notification.send(tokens, message)
