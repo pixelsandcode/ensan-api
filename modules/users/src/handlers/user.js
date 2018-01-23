@@ -28,14 +28,16 @@ module.exports = (server, options) => {
       User.verifyPin(request.payload)
         .then(result => {
           return User.get(result.userKey)
-        })
-        .then(user => {
-          const token = server.methods.jwt.create({
-            userKey: user.key,
-            scope: 'user'
-          })
-          reply.success(user.mask(options.users.masks.login))
-            .header('Authorization', token)
+            .then(user => {
+              const token = server.methods.jwt.create({
+                userKey: user.key,
+                scope: 'user'
+              })
+              const data = user.mask(options.users.masks.login)
+              data.auth = result.auth
+              reply.success(data)
+                .header('Authorization', token)
+            })
         })
         .catch(err => {
           reply.error(err, {payload: request.payload})
