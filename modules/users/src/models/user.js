@@ -195,6 +195,7 @@ module.exports = (server, options) => {
                   type, location, userKey, name, mobile, at: moment().format()
                 }
               }
+              if(type == options.users.notifyingTypes.inDanger) message.notification.click_action = "DANGER_CATEGORY"
               server.methods.notification.send(tokens, message)
               return {sendTo}
             })
