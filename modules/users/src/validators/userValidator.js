@@ -38,10 +38,20 @@ module.exports = (options) => {
       query: {}
     },
     addGuardian: {
-      payload: {
-        name: Joi.string().required(),
-        mobile: Joi.string().regex(mobileRegex).required()
-      },
+      payload: Joi.alternatives().try(
+        Joi.object().keys({
+          name: Joi.string().required(),
+          mobile: Joi.string().regex(mobileRegex).required()
+        }),
+        Joi.object().keys({
+          guardians: Joi.array().items(
+            Joi.object().keys({
+              name: Joi.string().required(),
+              mobile: Joi.string().regex(mobileRegex).required()
+            })
+          )
+        })
+      ),
       query: {}
     },
     listGuardians: {

@@ -107,33 +107,27 @@ module.exports = (server, options) => {
       return UserMobile.verifyPin(mobile, pin)
     }
 
-    static addGuardian (userKey, {name, mobile}) {
+    static addGuardians (userKey, guardians) {
       return this.get(userKey)
         .then(user => {
-          return Promise.all([
-            user,
-            UserMobile.exists(mobile)
-          ])
-        })
-        .spread((user, userMobile) => {
-          const operation = () => {
-            if(userMobile) return Promise.resolve(userMobile.doc.userKey)
-            const newUser = new User({name, mobile})
-            newUser.doc.state = options.users.states.pending
-            return newUser.create()
-              .then(() => {
-                return newUser.key
+          const promises = []
+          _.each(guardians, guardian => {
+            promises.push(
+              this.getOrCreate(guardian)
+                .then(newUser => {
+                  newUser.doc.name = guardian.name
+                  return newUser
+                })
+            )
+          })
+          return Promise.all(promises)
+            .then(users => {
+              const userKeys = _.map(users, 'key')
+              if(userKeys.indexOf(user.key) >= 0) throw Boom.methodNotAllowed("You can not add yourself as guardian")
+              guardians = _.map(users, user => {
+                return {userKey: user.key, name: user.doc.name}
               })
-          }
-          return operation()
-            .then(userKey => {
-              if(userKey == user.key) throw Boom.methodNotAllowed("You can not add yourself as guardian")
-              const index = _.findIndex(user.doc.guardians, guardian => {
-                return guardian.userKey == userKey
-              })
-              if(index >= 0)
-                throw Boom.conflict('the user already is added as your guardian')
-              user.doc.guardians.push({userKey, name})
+              user.doc.guardians = _.union(user.doc.guardians, guardians)
               return user.update()
                 .then(() => {
                   return user.listGuardians(user.key)
@@ -321,6 +315,19 @@ module.exports = (server, options) => {
           user.doc.guardians = []
           delete user.doc.joinedAt
           return user.update()
+        })
+    }
+
+    static getOrCreate ({mobile, name}) {
+      return UserMobile.exists(mobile)
+        .then(userMobile => {
+          if(userMobile) return this.get(userMobile.doc.userKey)
+          const newUser = new User({name, mobile})
+          newUser.doc.state = options.users.states.pending
+          return newUser.create()
+            .then(() => {
+              return newUser
+            })
         })
     }
   }

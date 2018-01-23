@@ -73,7 +73,8 @@ module.exports = (server, options) => {
       reply.success()
     },
     addGuardian (request, reply) {
-      User.addGuardian(request.auth.credentials.userKey, request.payload)
+      const guardians = request.payload.guardians || [request.payload]
+      User.addGuardians(request.auth.credentials.userKey, guardians)
         .then(result => {
           reply.success(result)
         })
