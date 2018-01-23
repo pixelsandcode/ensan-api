@@ -1,6 +1,7 @@
 "use strict"
 const _ = require('lodash')
 const Boom = require('boom')
+const moment = require('moment')
 
 module.exports = (server, options) => {
 
@@ -124,6 +125,35 @@ module.exports = (server, options) => {
               })
               .catch(err => {
                 reply.error(err, {mobile: request.params.mobile, type: request.payload.type})
+              })
+            break
+          case options.users.notifications.inDanger:
+          case options.users.notifications.healthy:
+            User.getByMobile(request.params.mobile)
+              .then(user => {
+                user.getDevices()
+                  .then(devices => {
+                    const message = {
+                      notification: {
+                        title: options.users.notifyGuardians.title[request.payload.type].replace(':name', user.doc.name),
+                        body: options.users.notifyGuardians.body[request.payload.type].replace(':name',  user.doc.name).replace(':at', moment().format('HH:mm')),
+                        sound: "default"
+                      },
+                      data: {
+                        type: request.payload.type,
+                        location: {
+                          lat: 35.6892,
+                          lon:51.3890},
+                        userKey: user.key,
+                        name: user.doc.name,
+                        mobile: user.doc.mobile,
+                        at: moment().format()
+                      }
+                    }
+                    if(request.payload.type == options.users.notifyingTypes.inDanger) message.notification.click_action = "DANGER_CATEGORY"
+                    server.methods.notification.send(devices, message)
+                    reply.success()
+                  })
               })
             break
           default:

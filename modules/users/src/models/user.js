@@ -331,5 +331,12 @@ module.exports = (server, options) => {
             })
         })
     }
+
+    getDevices () {
+      return UserDevices.findByUser(this.key, 'devices')
+        .then(userDevices => {
+          return userDevices[0].devices
+        })
+    }
   }
 }

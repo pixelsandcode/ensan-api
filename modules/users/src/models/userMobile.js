@@ -70,7 +70,7 @@ module.exports = (server, options) => {
               const smsApi = Kavenegar.KavenegarApi({apikey: options.kavenegar.apiKey})
               smsApi.Send({
                 message: `کد تایید شما` + `\n${userMobile.doc.verificationPin}\nwww.ensanapp.ir`,
-                sender: "100065995",
+                sender: options.kavenegar.number,
                 receptor: mobile
               });
               console.log(userMobile.doc.verificationPin, ">>>>>>>>>>>>> sms")
