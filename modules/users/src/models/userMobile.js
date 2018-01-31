@@ -68,9 +68,9 @@ module.exports = (server, options) => {
           return userMobile.update()
             .then(() => {
               const smsApi = Kavenegar.KavenegarApi({apikey: options.kavenegar.apiKey})
-              smsApi.Send({
-                message: `کد تایید شما` + `\n${userMobile.doc.verificationPin}\nwww.ensanapp.ir`,
-                sender: options.kavenegar.number,
+              smsApi.VerifyLookup({
+                token: userMobile.doc.verificationPin,
+                template: options.kavenegar.templates.verification,
                 receptor: mobile
               });
               console.log(userMobile.doc.verificationPin, ">>>>>>>>>>>>> sms")
